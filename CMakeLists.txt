@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 set(CMAKE_CXX_STANDARD 14) #set C++ standard
 set(CMAKE_C_STANDARD 11) #set C standard
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 project(bp_osd_c)
 
@@ -31,6 +32,14 @@ set(LIB_FILES ${LIB_FILES} src/logical_check.c src/logical_check.h)
 add_library(bp_osd ${LIB_FILES})
 target_link_libraries(bp_osd json_library radford_neal mtwister_rng)
 target_include_directories(bp_osd PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
+
+#for pybind11 project
+#addint pybind11
+add_subdirectory(pybind11)
+pybind11_add_module(bp_decode_pybind11 sim_scripts/bp_decode_pybind11.cpp)
+target_link_libraries(bp_decode_pybind11 PRIVATE bp_osd json_library radford_neal mtwister_rng)
+target_include_directories(bp_decode_pybind11 PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
+
 
 ## Build the project for the example script
 set(PROJECT bp_osd_decode)
